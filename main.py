@@ -1,44 +1,44 @@
 import pygame
 import sys
 
-# Initialize Pygame
+
 pygame.init()
 
-# Define dimensions and colors
-CELL_SIZE = 100  # Size of each cell
+
+CELL_SIZE = 100  
 ROWS, COLS = 6, 6
 BOARD_WIDTH = CELL_SIZE * COLS
 BOARD_HEIGHT = CELL_SIZE * ROWS
-LINE_COLOR = (255, 255, 255)  # White for better visibility
-BACKGROUND_COLOR = (0, 0, 128)  # Dark blue for better contrast
-BLACK_COLOR = (0, 0, 0)  # Black
-WHITE_COLOR = (255, 255, 255)  # White
-TEXT_COLOR = (255, 255, 255)  # White
+LINE_COLOR = (255, 255, 255) 
+BACKGROUND_COLOR = (0, 0, 128) 
+BLACK_COLOR = (0, 0, 0) 
+WHITE_COLOR = (255, 255, 255)
+TEXT_COLOR = (255, 255, 255) 
 
-# Create the display surface
-screen = pygame.display.set_mode((BOARD_WIDTH, BOARD_HEIGHT + 50))  # Extra space for the text
+
+screen = pygame.display.set_mode((BOARD_WIDTH, BOARD_HEIGHT + 50))  
 pygame.display.set_caption('6x6 Board with Movable Pieces')
 
-# Initialize the font
+
 pygame.font.init()
 font = pygame.font.SysFont(None, 36)
 
-# Load and play background music
+
 pygame.mixer.init()
-pygame.mixer.music.load('sound_Assets/smile.mp3')  # Replace with the path to your music file
-pygame.mixer.music.play(-1)  # -1 means the music will loop indefinitely
+pygame.mixer.music.load('sound_Assets/smile.mp3')  
+pygame.mixer.music.play(-1)  
 
-# Load victory music
-victory_music = 'sound_Assets/celebration-short-version-170834.mp3'  # Replace with the path to your victory music file
 
-# Initial positions of the pieces (in grid coordinates)
+victory_music = 'sound_Assets/celebration-short-version-170834.mp3'  
+
+
 black_piece = {'x': 0, 'y': 0, 'color': BLACK_COLOR}
 white_piece = {'x': 1, 'y': 1, 'color': WHITE_COLOR}
-turn = 'white'  # White moves first
-winner = None  # No winner initially
-turn_start_time = None  # Start time of the turn
-COUNTDOWN_TIME = 2000  # 2 seconds in milliseconds
-first_move = True  # Flag to check if the first move has been made
+turn = 'white'  
+winner = None 
+turn_start_time = None  
+COUNTDOWN_TIME = 2000  
+first_move = True 
 
 def draw_board():
     for x in range(0, BOARD_WIDTH, CELL_SIZE):
@@ -47,7 +47,7 @@ def draw_board():
             pygame.draw.rect(screen, LINE_COLOR, rect, 1)
 
 def draw_piece(piece):
-    # Convert grid coordinates to pixel coordinates
+    
     pixel_x = piece['x'] * CELL_SIZE + CELL_SIZE // 2
     pixel_y = piece['y'] * CELL_SIZE + CELL_SIZE // 2
     pygame.draw.circle(screen, piece['color'], (pixel_x, pixel_y), CELL_SIZE // 3)
@@ -70,22 +70,22 @@ def draw_winner_circle():
 
 def draw_countdown():
     elapsed_time = pygame.time.get_ticks() - turn_start_time
-    remaining_time = max(0, COUNTDOWN_TIME - elapsed_time) // 1000  # Convert to seconds
+    remaining_time = max(0, COUNTDOWN_TIME - elapsed_time) // 1000  
     text = font.render(f"Next turn in: {remaining_time}", True, TEXT_COLOR)
     screen.blit(text, (BOARD_WIDTH - 200, BOARD_HEIGHT + 10))
 
 def play_victory_music():
-    pygame.mixer.music.stop()  # Stop the current background music
-    pygame.mixer.music.load(victory_music)  # Load the victory music
-    pygame.mixer.music.play()  # Play the victory music
+    pygame.mixer.music.stop() 
+    pygame.mixer.music.load(victory_music)  
+    pygame.mixer.music.play()  
 
-# Main loop
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        elif event.type == pygame.KEYDOWN and not winner:  # Only allow moves if no winner
+        elif event.type == pygame.KEYDOWN and not winner: 
             if first_move:
                 piece = white_piece
             else:
@@ -106,12 +106,12 @@ while True:
                 moved = True
 
             if moved:
-                # Check for win condition
+                
                 if black_piece['x'] == white_piece['x'] and black_piece['y'] == white_piece['y']:
                     winner = 'black' if turn == 'black' else 'white'
-                    play_victory_music()  # Play the victory music
+                    play_victory_music() 
 
-                # Alternate turns and reset the countdown
+                
                 turn = 'black' if turn == 'white' else 'white'
                 turn_start_time = pygame.time.get_ticks()
                 first_move = False
@@ -128,7 +128,7 @@ while True:
         else:
             draw_countdown()
     else:
-        # Draw both pieces if there's a winner so the final move is visible
+        
         draw_piece(white_piece)
         draw_piece(black_piece)
         draw_winner_circle()
